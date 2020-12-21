@@ -1,4 +1,5 @@
 import {SSM} from 'aws-sdk';
+import * as path from 'path';
 import {AWSCredentials, optionsToAwsArgs} from './utils';
 
 interface SecretsOptions {
@@ -11,11 +12,10 @@ interface SecretsOptions {
  * @param opts
  */
 const getParameters = async (
-  path: string,
+  ssmPath: string,
   opts?: SecretsOptions,
 ): Promise<Record<string, string>> => {
   const parameterFromPath = async (
-    ssmPath: string,
     nextToken: string | undefined,
     params?: Record<string, string>,
   ): Promise<Record<string, string>> => {
@@ -32,16 +32,16 @@ const getParameters = async (
       ...params,
       ...Object.fromEntries(
         result.Parameters?.map((param) => [
-          param.Name as string,
+          path.basename(param.Name as string),
           param.Value as string,
         ]) || [],
       ),
     };
     if (result.NextToken && result.Parameters && result.Parameters.length)
-      return parameterFromPath(ssmPath, result.NextToken, newParams);
+      return parameterFromPath(result.NextToken, newParams);
     return newParams;
   };
-  return parameterFromPath(path, undefined);
+  return parameterFromPath(undefined);
 };
 
 export {getParameters};
