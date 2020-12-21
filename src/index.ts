@@ -32,9 +32,9 @@ const toConnectionString = (template: SSMTemplate) => {
  *   }
  * });
  * blackbox.onError(e => console.log('Cache error', e))
- * await blackbox.get('my-key');
- * await blackbox.set('my-key', 'my-value');
- * await blackbox.set('my-key', {foo: 'bar'});
+ * const params = await blackbox.parameters('/blog/production');
+ * const db = await blackbox.secret(process.env.POSTGRES_SECRET_ID);
+ * const connectionString = db.toConnectionString();
  * ```
  */
 class Blackbox extends Cache {

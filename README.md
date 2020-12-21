@@ -31,8 +31,20 @@ const blackbox = new Blackbox({
   }
 });
 
+// non-blocking errors thrown when reading or writing to the cache
 blackbox.onError(e => console.log('Cache error', e))
-await blackbox.get('my-key');
+
+// Parameter object from SSM
+const params = await blackbox.parameters('/blog/production'); // {DATA: 'shhh', JWT_SECRET: 'oooo'}
+
+// Database connection strings from secret-manager
+const db = await blackbox.secret(process.env.POSTGRES_SECRET_ID);
+const connectionString = db.toConnectionString(); // postgres://...:...@.../...
+
+// Direct  cache access
 await blackbox.set('my-key', 'my-value');
 await blackbox.set('my-key', {foo: 'bar'});
+await blackbox.get('my-key');
 ```
+
+✈️ / [planes.studio](https://planes.studio)
