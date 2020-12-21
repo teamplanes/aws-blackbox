@@ -1,4 +1,5 @@
 import cacheManager from 'cache-manager';
+import cacheManagerMemoryStore from 'cache-manager/lib/stores/memory';
 import redisStore from 'cache-manager-redis-store';
 
 export interface CacheOptions {
@@ -22,7 +23,7 @@ class Cache {
     this.ttl = opts?.ttl ?? 3600;
 
     const memoryCache = cacheManager.caching({
-      store: 'memory',
+      store: cacheManagerMemoryStore,
       ttl: this.ttl,
     });
 
