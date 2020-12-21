@@ -41,7 +41,7 @@ class Blackbox extends Cache {
   private errorCallbacks: ((e: Error) => void)[] = [];
 
   constructor(
-    private options?: {credentials: AWSCredentials; cache?: CacheOptions},
+    private options?: {credentials?: AWSCredentials; cache?: CacheOptions},
   ) {
     super(options?.cache);
   }

@@ -2,13 +2,15 @@ import cacheManager from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
 
 export interface CacheOptions {
-  redis: {
-    host: string;
-    port: number;
+  redis?: {
+    host?: string;
+    port?: number;
     // eslint-disable-next-line camelcase
-    auth_pass: string;
+    auth_pass?: string;
+    // eslint-disable-next-line camelcase
+    no_ready_check?: boolean;
   };
-  ttl: number;
+  ttl?: number;
 }
 
 class Cache {
