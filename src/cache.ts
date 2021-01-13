@@ -3,14 +3,16 @@ import cacheManagerMemoryStore from 'cache-manager/lib/stores/memory';
 import redisStore from 'cache-manager-redis-store';
 
 export interface CacheOptions {
-  redis?: {
-    host?: string;
-    port?: number;
-    // eslint-disable-next-line camelcase
-    auth_pass?: string;
-    // eslint-disable-next-line camelcase
-    no_ready_check?: boolean;
-  };
+  redis?:
+    | {
+        host?: string;
+        port?: number;
+        // eslint-disable-next-line camelcase
+        auth_pass?: string;
+        // eslint-disable-next-line camelcase
+        no_ready_check?: boolean;
+      }
+    | boolean;
   ttl?: number;
 }
 
@@ -27,13 +29,17 @@ class Cache {
       ttl: this.ttl,
     });
 
-    const redisCache = cacheManager.caching({
-      store: redisStore,
-      ...opts?.redis,
-      ttl: this.ttl,
-    });
+    const redisCache = opts?.redis
+      ? cacheManager.caching({
+          store: redisStore,
+          ...(typeof opts?.redis === 'object' ? opts?.redis : {}),
+          ttl: this.ttl,
+        })
+      : null;
 
-    this.cache = cacheManager.multiCaching([memoryCache, redisCache]);
+    this.cache = cacheManager.multiCaching(
+      redisCache ? [memoryCache, redisCache] : [memoryCache],
+    );
   }
 
   /**
